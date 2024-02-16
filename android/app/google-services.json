@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "614529383996",
+    "project_id": "esmm-3f1ec",
+    "storage_bucket": "esmm-3f1ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614529383996:android:815cfbb0e1395c7a0d0d39",
+        "android_client_info": {
+          "package_name": "com.company.esm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgQ0sUZKJYoMF1YeSx468uYN49fA0ZWoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614529383996:android:c220fc5dbd01a69b0d0d39",
+        "android_client_info": {
+          "package_name": "com.example.rc_fl_gopoolar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgQ0sUZKJYoMF1YeSx468uYN49fA0ZWoA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
