@@ -1,6 +1,7 @@
 import 'package:esm/firebase_options.dart';
 import 'package:esm/repository/auth_repository/auth_repository.dart';
 import 'package:esm/screens/auth/phone_otp_verification.dart';
+import 'package:esm/screens/auth/register.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,12 +22,13 @@ await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 ).then((value) => Get.put(AuthenticationRepository()));
   runApp(
-  
+      const MyApp());
+  /*
   DevicePreview(
     enabled: !kReleaseMode,
     builder: (context) => const MyApp(),
 ) 
-  );
+  );*/
 }
 
 class MyApp extends StatelessWidget {

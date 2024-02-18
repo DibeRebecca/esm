@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:esm/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import '../../controllers/signup_controller.dart';
+
+final controller = Get.put(SignUpController());
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,14 +17,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
   DateTime? backPressTime;
-int _counter = 0;
-        var countriess = countries;
-      var filteredCountries = ["BJ", "BF","CI","TG"];
-      List<Country> filter = [];
-      String? _selectedCountryCode;
- void _incrementCounter() {
+  int _counter = 0;
+  String? phoneNumber;
+  var countriess = countries;
+  var filteredCountries = ["BJ", "BF", "CI", "TG"];
+  List<Country> filter = [];
+  String? _selectedCountryCode;
+  void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -30,22 +33,24 @@ int _counter = 0;
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-  }  //
+  } //
+
   //final controller=Get.put(SignUpController());
-  final _formkey=GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
 
   @override
   void initState() {
-        // TODO: implement initState
-        super.initState();
-       for (var element in countriess) {
-         for (var filteredc in filteredCountries) {
-          if (filteredc == element.code){
-            filter.add(element);
-          }
-         }
+    // TODO: implement initState
+    super.initState();
+    for (var element in countriess) {
+      for (var filteredc in filteredCountries) {
+        if (filteredc == element.code) {
+          filter.add(element);
         }
       }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -63,30 +68,38 @@ int _counter = 0;
           children: [
             headerImage(size),
             loginTitle(),
-            SizedBox(height: 50,),
+            const SizedBox(
+              height: 50,
+            ),
             Expanded(
               child: Container(
                 height: 400,
-                 padding: const EdgeInsets.all(fixPadding * 2.0),
-                    decoration: const BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(40.0)),
+                padding: const EdgeInsets.all(fixPadding * 2.0),
+                decoration: const BoxDecoration(
+                  color: primaryColor,
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(40.0)),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 40,
                     ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 40,),
-                        heightSpace,
-                        //welcomeText(),
-                         SizedBox(height: 50,),
-                        mobileNumberField(),
-                        SizedBox(height: 30,),
-                        heightSpace,
-                        heightSpace,
-                        heightSpace,
-                        heightSpace,
-                        loginButton(),
-                      ],
+                    heightSpace,
+                    //welcomeText(),
+                    const SizedBox(
+                      height: 50,
                     ),
+                    mobileNumberField(),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    heightSpace,
+
+                    heightSpace,
+                    loginButton(),
+                  ],
+                ),
               ),
             )
           ],
@@ -98,29 +111,35 @@ int _counter = 0;
   loginButton() {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/home');
+        if (phoneNumber != null) {
+          print(phoneNumber);
+          controller.phoneAuthentication(phoneNumber!);
+        }
       },
       child: Container(
-        width: double.maxFinite,
-        padding: const EdgeInsets.symmetric(
-            horizontal: fixPadding * 2.0, vertical: fixPadding * 1.4),
-        decoration: BoxDecoration(
-          color: secondaryColor,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-              color: secondaryColor.withOpacity(0.1),
-              blurRadius: 12.0,
-              offset: const Offset(0, 6),
-            )
-          ],
-        ),
-        alignment: Alignment.center,
-        child: const Text(
-          "Se connecter",
-          style: bold18White,
-        ),
-      ),
+          width: double.maxFinite,
+          padding: const EdgeInsets.symmetric(
+              horizontal: fixPadding * 2.0, vertical: fixPadding * 1.4),
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: secondaryColor.withOpacity(0.1),
+                blurRadius: 12.0,
+                offset: const Offset(0, 6),
+              )
+            ],
+          ),
+          alignment: Alignment.center,
+          child: Obx(
+            () => controller.loading.value == true
+                ? const CircularProgressIndicator()
+                : const Text(
+                    "Se connecter",
+                    style: bold18White,
+                  ),
+          )),
     );
   }
 
@@ -137,30 +156,33 @@ int _counter = 0;
           )
         ],
       ),
-      child:  IntlPhoneField(
+      child: IntlPhoneField(
         disableLengthCheck: true,
         showCountryFlag: true,
         dropdownIconPosition: IconPosition.trailing,
-        dropdownIcon: Icon(
+        dropdownIcon: const Icon(
           Icons.keyboard_arrow_down,
           color: black33Color,
           size: 20.0,
         ),
         cursorColor: primaryColor,
         onChanged: (phone) {
-              setState(() {
-                            _selectedCountryCode = phone.countryCode;
-                          });    },
-                          onCountryChanged: (phone) {
-                              setState(() {
-                            _selectedCountryCode = phone.code;
-                          });
-                            },
+          setState(() {
+            _selectedCountryCode = phone.countryCode;
+            phoneNumber = phone.completeNumber;
+          });
+        },
+        onCountryChanged: (phone) {
+          setState(() {
+            _selectedCountryCode = phone.code;
+          });
+        },
         style: semibold15Black33,
         initialCountryCode: 'TG',
         dropdownTextStyle: semibold15Black33,
-        flagsButtonMargin: EdgeInsets.symmetric(horizontal: fixPadding * 0.7),
-        decoration: InputDecoration(
+        flagsButtonMargin:
+            const EdgeInsets.symmetric(horizontal: fixPadding * 0.7),
+        decoration: const InputDecoration(
           border: InputBorder.none,
           hintText: "Votre numero de télephone",
           hintStyle: semibold15Grey,

@@ -1,6 +1,6 @@
 export 'package:esm/screens/auth/login.dart';
 export 'package:esm/screens/auth/otp_verification.dart';
-export 'package:esm/screens/auth/register.dart';
+
 export 'package:esm/screens/bottombar.dart';
 export 'package:esm/screens/home/home.dart';
 export 'package:esm/screens/onboarding/onboarding.dart';

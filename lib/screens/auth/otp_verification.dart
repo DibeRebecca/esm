@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:esm/controllers/otp_controller.dart';
+import 'package:esm/controllers/signup_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:esm/theme/theme.dart';
 
@@ -15,9 +17,10 @@ class OTPVerificationScreen extends StatefulWidget {
 }
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
+  final controller = Get.put(SignUpController());
   Timer? countdownTimer;
   Duration myDuration = const Duration(minutes: 1);
-  var otp;
+  String otp="";
 
   @override
   void initState() {
@@ -135,13 +138,15 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       ),
       defaultPinTheme: pinTheme,
       onCompleted: (code) {
+
+
         /*Timer(const Duration(seconds: 3), () {
           stopTimer();
           Navigator.popAndPushNamed(context, '/bottomBar');
         });
         pleaseWaitDialog();*/
         otp=code;
-        OTPController.instance.verifyOTP(otp);
+       // OTPController.instance.verifyOTP(otp);
       },
     ),
     const SizedBox(height:50),
@@ -153,7 +158,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           Navigator.popAndPushNamed(context, '/bottomBar');
         });
         pleaseWaitDialog();*/
-        
+        controller.verifyOTP(otp);
       },
       child: Container(
         width: double.maxFinite,
@@ -171,10 +176,14 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
           ],
         ),
         alignment: Alignment.center,
-        child: const Text(
-          "Verifier",
-          style: bold18White,
-        ),
+        child: Obx(
+              () => controller.loading.value==true
+              ? const CircularProgressIndicator()
+              : const Text(
+                "Verifier",
+            style: bold18White,
+          ),
+        )
       ),
     ),
 const SizedBox(height:20),
