@@ -1,6 +1,8 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:esm/controllers/auth_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/carbon.dart';
@@ -8,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:esm/theme/theme.dart';
 import 'package:esm/widget/column_builder.dart';
 
+final controller = Get.put(AuthController());
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -38,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+   // controller.loadUser();
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: f8Color,

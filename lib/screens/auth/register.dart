@@ -1,3 +1,4 @@
+import 'package:esm/controllers/auth_controller.dart';
 import 'package:esm/controllers/signup_controller.dart';
 import 'package:esm/screens/auth/otp_verification.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
+final authController = Get.put(AuthController());
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -17,6 +19,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   //TextEditingController controller=TextEditingController();
+  final nameFieldController = TextEditingController();
+  final emailFieldController = TextEditingController();
+
 int _counter = 0;
         var countriess = countries;
       var filteredCountries = ["BJ", "BF","CI","TG"];
@@ -50,19 +55,21 @@ int _counter = 0;
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 50,),
-          headerImage(size),
-          const SizedBox(height: 50,),
-          registerTitle(),
-           const SizedBox(height: 50,),
-          //welcomeText(),
-          Expanded(child: formWidget(),)
-          
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 50,),
+            headerImage(size),
+            const SizedBox(height: 50,),
+            registerTitle(),
+             const SizedBox(height: 50,),
+            //welcomeText(),
+            formWidget(),
+            
+          ],
+        ),
       ),
     );
   }
@@ -75,7 +82,7 @@ int _counter = 0;
           print("yes");
           //SignUpController.instance.registerUser(controller.email.text.trim(),controller.password.text.trim());
           SignUpController.instance.phoneAuthentication(controller.phoneNo.text.trim());
-       Get.to(()=>const OTPVerificationScreen() );
+       //Get.to(()=>const OTPVerificationScreen() );
         }
       },
       child: Container(
@@ -135,7 +142,7 @@ formWidget() {
                   ],
                 ),
                       child: TextField(
-                        controller: controller.name,
+                        controller: nameFieldController,
                         cursorColor: primaryColor,
                         style: semibold15Black33,
                         keyboardType: TextInputType.name,
@@ -177,7 +184,7 @@ formWidget() {
                   ],
                 ),
                         child: TextField(
-                          controller: controller.email,
+                          controller: emailFieldController,
                           cursorColor: primaryColor,
                           style: semibold15Black33,
                           keyboardType: TextInputType.emailAddress,
@@ -250,10 +257,13 @@ formWidget() {
                   //Navigator.pushNamed(context, '/otp');
                   if(_formkey.currentState!.validate()){
                     String phoneNumberWithCountryCode =
-                              '+$_selectedCountryCode${controller.phoneNo.text.trim()}';
+                              '$_selectedCountryCode${controller.phoneNo.text.trim()}';
                     //SignUpController.instance.registerUser(controller.email.text.trim(),controller.password.text.trim());
-                    SignUpController.instance.phoneAuthentication(phoneNumberWithCountryCode);
-                 Get.to(()=>const OTPVerificationScreen() );
+                   // SignUpController.instance.phoneAuthentication(phoneNumberWithCountryCode);
+                // Get.to(()=>const OTPVerificationScreen() );
+
+                   authController.register(name: nameFieldController.text, email:emailFieldController.text, phone:phoneNumberWithCountryCode);
+
                   }
                 },
                 child: Container(
@@ -272,10 +282,10 @@ formWidget() {
                     ],
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: Obx(() => authController.loading.value==true? const CircularProgressIndicator():const Text(
                     "Inscription",
                     style: bold18White,
-                  ),
+                  ),)
                 ),
               )
                   ],

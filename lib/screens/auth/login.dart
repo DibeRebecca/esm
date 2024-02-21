@@ -1,10 +1,17 @@
 import 'dart:io';
 
 import 'package:esm/theme/theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+
+import '../../controllers/auth_controller.dart';
+
+final _authController = Get.put(AuthController());
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,14 +21,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
+  final phoneFieldController = TextEditingController();
+  final emailFieldController = TextEditingController();
   DateTime? backPressTime;
-int _counter = 0;
-        var countriess = countries;
-      var filteredCountries = ["BJ", "BF","CI","TG"];
-      List<Country> filter = [];
-      String? _selectedCountryCode;
- void _incrementCounter() {
+  int _counter = 0;
+  var countriess = countries;
+  var filteredCountries = ["BJ", "BF", "CI", "TG"];
+  List<Country> filter = [];
+  String? _selectedCountryCode;
+  void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -30,22 +38,24 @@ int _counter = 0;
       // called again, and so nothing would appear to happen.
       _counter++;
     });
-  }  //
+  } //
+
   //final controller=Get.put(SignUpController());
-  final _formkey=GlobalKey<FormState>();
+  final _formkey = GlobalKey<FormState>();
 
   @override
   void initState() {
-        // TODO: implement initState
-        super.initState();
-       for (var element in countriess) {
-         for (var filteredc in filteredCountries) {
-          if (filteredc == element.code){
-            filter.add(element);
-          }
-         }
+    // TODO: implement initState
+    super.initState();
+    for (var element in countriess) {
+      for (var filteredc in filteredCountries) {
+        if (filteredc == element.code) {
+          filter.add(element);
         }
       }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -59,37 +69,79 @@ int _counter = 0;
         }
       },
       child: Scaffold(
-        body: Column(
-          children: [
-            headerImage(size),
-            loginTitle(),
-            SizedBox(height: 50,),
-            Expanded(
-              child: Container(
-                height: 400,
-                 padding: const EdgeInsets.all(fixPadding * 2.0),
-                    decoration: const BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(40.0)),
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 40,),
-                        heightSpace,
-                        //welcomeText(),
-                         SizedBox(height: 50,),
-                        mobileNumberField(),
-                        SizedBox(height: 30,),
-                        heightSpace,
-                        heightSpace,
-                        heightSpace,
-                        heightSpace,
-                        loginButton(),
-                      ],
-                    ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              headerImage(size),
+              loginTitle(),
+              SizedBox(
+                height: 50,
               ),
-            )
-          ],
+              Container(
+                height: 400,
+                padding: const EdgeInsets.all(fixPadding * 2.0),
+                decoration: const BoxDecoration(
+                  color: primaryColor,
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(40.0)),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 40,
+                    ),
+                    heightSpace,
+                    //welcomeText(),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    mobileNumberField(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: blackColor.withOpacity(0.1),
+                            blurRadius: 12.0,
+                            offset: const Offset(0, 6),
+                          )
+                        ],
+                      ),
+                      child: TextField(
+                        controller: emailFieldController,
+                        cursorColor: primaryColor,
+                        style: semibold15Black33,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Email",
+                          hintStyle: semibold15Grey,
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: fixPadding * 1.4),
+                          prefixIcon: Icon(
+                            CupertinoIcons.mail,
+                            size: 20.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    heightSpace,
+                    heightSpace,
+                    heightSpace,
+                    heightSpace,
+                    loginButton(),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -98,7 +150,12 @@ int _counter = 0;
   loginButton() {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/home');
+        //Navigator.pushNamed(context, '/home');
+        String phoneNumberWithCountryCode =
+            '$_selectedCountryCode${phoneFieldController.text.trim()}';
+        _authController.login(
+            email: emailFieldController.text,
+            phone: phoneNumberWithCountryCode);
       },
       child: Container(
         width: double.maxFinite,
@@ -137,7 +194,8 @@ int _counter = 0;
           )
         ],
       ),
-      child:  IntlPhoneField(
+      child: IntlPhoneField(
+        controller: phoneFieldController,
         disableLengthCheck: true,
         showCountryFlag: true,
         dropdownIconPosition: IconPosition.trailing,
@@ -148,14 +206,15 @@ int _counter = 0;
         ),
         cursorColor: primaryColor,
         onChanged: (phone) {
-              setState(() {
-                            _selectedCountryCode = phone.countryCode;
-                          });    },
-                          onCountryChanged: (phone) {
-                              setState(() {
-                            _selectedCountryCode = phone.code;
-                          });
-                            },
+          setState(() {
+            _selectedCountryCode = phone.countryCode;
+          });
+        },
+        onCountryChanged: (phone) {
+          setState(() {
+            _selectedCountryCode = phone.code;
+          });
+        },
         style: semibold15Black33,
         initialCountryCode: 'TG',
         dropdownTextStyle: semibold15Black33,

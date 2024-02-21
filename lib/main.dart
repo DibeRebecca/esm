@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:esm/theme/theme.dart';
 import 'package:esm/screens/screens.dart';
@@ -13,8 +14,8 @@ import 'package:firebase_core/firebase_core.dart' show Firebase, FirebaseOptions
 import 'package:esm/repository/di.dart' as di;
 
 
-void main() async{ 
-  
+void main() async{
+  await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
 await Firebase.initializeApp(
@@ -22,25 +23,34 @@ await Firebase.initializeApp(
 ).then((value) => Get.put(AuthenticationRepository()));
   runApp(
   
-  DevicePreview(
+ /* DevicePreview(
     enabled: !kReleaseMode,
     builder: (context) => const MyApp(),
-) 
+) */ const MyApp(),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+
+  @override
   Widget build(BuildContext context) {
+
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light));
     return GetMaterialApp(
       useInheritedMediaQuery: true,
-       locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
+     //  locale: DevicePreview.locale(context),
+     // builder: DevicePreview.appBuilder,
       title: 'ESM',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -52,7 +62,7 @@ class MyApp extends StatelessWidget {
         primaryColor: primaryColor,
         fontFamily: 'Montserrat',
       ),
-      home: const SplashScreen(),
+      home: const HomeScreen(),
       onGenerateRoute: routes,
     );
   }

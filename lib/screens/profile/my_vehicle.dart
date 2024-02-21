@@ -1,6 +1,12 @@
+import 'package:esm/controllers/vehicule_controller.dart';
+import 'package:esm/core/data/models/vehicle_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:esm/theme/theme.dart';
+
+import '../../components/vehicules/vehicule_tile.dart';
+
+final _controller = VehiculeController();
 
 class MyVehicleScreen extends StatefulWidget {
   const MyVehicleScreen({super.key});
@@ -36,7 +42,8 @@ class _MyVehicleScreenState extends State<MyVehicleScreen> {
         leading: IconButton(
           padding: const EdgeInsets.symmetric(horizontal: fixPadding * 2.0),
           onPressed: () {
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            _controller.getVehicules();
           },
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -77,100 +84,28 @@ class _MyVehicleScreenState extends State<MyVehicleScreen> {
   }
 
   vehicleListContent(Size size) {
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.symmetric(
-          horizontal: fixPadding * 2.0, vertical: fixPadding),
-      itemCount: vehicleList.length,
-      itemBuilder: (context, index) {
-        return Container(
-          height: size.height * 0.22,
-          clipBehavior: Clip.hardEdge,
-          width: double.maxFinite,
-          margin: const EdgeInsets.symmetric(vertical: fixPadding),
-          decoration: BoxDecoration(
-            color: whiteColor,
-            borderRadius: BorderRadius.circular(10.0),
-            image: DecorationImage(
-              image: AssetImage(
-                vehicleList[index]['image'].toString(),
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  whiteColor.withOpacity(0.0),
-                  const Color(0xFF1C1C1C).withOpacity(0.5)
-                ],
-              ),
-            ),
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(fixPadding * 0.8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            vehicleList.removeAt(index);
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              duration: Duration(milliseconds: 1500),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: blackColor,
-                              content: Text(
-                                "Supprimer de mes vehicules",
-                                style: semibold15White,
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Icon(
-                          CupertinoIcons.trash,
-                          color: redColor,
-                          size: 23.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(fixPadding * 1.4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        vehicleList[index]['name'].toString(),
-                        style: semibold15White,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      height5Space,
-                      Text(
-                        "${vehicleList[index]['seat']} personnes",
-                        style: medium15White,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
+    return FutureBuilder<List<Vehicule>?>(
+        future: _controller.getVehicules(),
+        builder: (context, snapshot) {
+          if(snapshot.hasData){
+            if(snapshot.data!=null){
+              return ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: fixPadding * 2.0, vertical: fixPadding),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return VehiculeTile(vehicule: snapshot.data![index],);
+                },
+              );
+            }
+          }
+          if(snapshot.connectionState== ConnectionState.waiting){
+            return const CircularProgressIndicator();
+          }
+          return const Text("data");
+        },
     );
   }
 }
+

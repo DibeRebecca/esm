@@ -1,8 +1,11 @@
+import 'package:esm/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:esm/theme/theme.dart';
 
+final user = Get.put(AuthController()).currentUser?.value;
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -291,18 +294,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           widthSpace,
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Rebecca TABOUKOUNA",
+                  "${user?.name}",
                   style: semibold17Black33,
                   overflow: TextOverflow.ellipsis,
                 ),
                 height5Space,
                 Text(
-                  "rebe.taboukouna@mail.com",
+                  "${user?.email}",
                   style: semibold16Grey,
                   overflow: TextOverflow.ellipsis,
                 )

@@ -1,6 +1,8 @@
+import 'package:esm/controllers/vehicule_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:esm/theme/theme.dart';
+import 'package:get/get.dart';
 
 class AddNewVehicleScreen extends StatefulWidget {
   const AddNewVehicleScreen({super.key});
@@ -10,6 +12,14 @@ class AddNewVehicleScreen extends StatefulWidget {
 }
 
 class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
+  final matriculeFieldController = TextEditingController();
+  final couleurFieldController = TextEditingController();
+  final typeFieldController = TextEditingController();
+  final commentaireFieldController = TextEditingController();
+  final nbreSiegeFieldController = TextEditingController();
+
+  final _vehicleController = Get.put(VehiculeController());
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -71,7 +81,14 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: GestureDetector(
         onTap: () {
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          _vehicleController.addVehicle(
+              matricule: matriculeFieldController.text,
+              couleur: couleurFieldController.text,
+              type: typeFieldController.text,
+              nbreSieges: 3,
+              modelId: 1,
+              commentaire: commentaireFieldController.text);
         },
         child: Container(
           margin: const EdgeInsets.all(fixPadding * 2.0),
@@ -116,13 +133,14 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
             expands: true,
             maxLines: null,
             minLines: null,
             cursorColor: primaryColor,
+            controller: commentaireFieldController,
             style: semibold15Black33,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Support",
               hintStyle: medium15Grey,
               border: InputBorder.none,
@@ -153,11 +171,12 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
             cursorColor: primaryColor,
+            controller: nbreSiegeFieldController,
             style: semibold15Black33,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Nombre de sieges",
               hintStyle: medium15Grey,
               border: InputBorder.none,
@@ -188,11 +207,12 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
             cursorColor: primaryColor,
+            controller: couleurFieldController,
             style: semibold15Black33,
             keyboardType: TextInputType.name,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Couleur",
               hintStyle: medium15Grey,
               border: InputBorder.none,
@@ -223,11 +243,12 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
+            controller: matriculeFieldController,
             cursorColor: primaryColor,
             style: semibold15Black33,
             keyboardType: TextInputType.visiblePassword,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Numero Matricule",
               hintStyle: medium15Grey,
               border: InputBorder.none,
@@ -258,10 +279,11 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
             cursorColor: primaryColor,
             style: semibold15Black33,
-            decoration: InputDecoration(
+            controller: typeFieldController,
+            decoration: const InputDecoration(
               hintText: "Type de vehicule",
               hintStyle: medium15Grey,
               border: InputBorder.none,
@@ -292,11 +314,12 @@ class _AddNewVehicleScreenState extends State<AddNewVehicleScreen> {
               )
             ],
           ),
-          child: const TextField(
+          child: TextField(
+            controller: typeFieldController,
             cursorColor: primaryColor,
             keyboardType: TextInputType.name,
             style: semibold15Black33,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Entrer votre nom",
               hintStyle: medium15Grey,
               border: InputBorder.none,

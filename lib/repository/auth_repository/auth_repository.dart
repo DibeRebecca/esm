@@ -2,6 +2,7 @@ import 'package:esm/repository/exceptions/signup_failue.dart';
 import 'package:esm/screens/screens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
@@ -16,9 +17,10 @@ var verificationId=''.obs;
     firebaseUser.bindStream(_auth.userChanges());
     ever(firebaseUser, _setInitialScreen);
   }
-
   _setInitialScreen(User? user) {
-    user==null?Get.offAll(()=>const SplashScreen() ) : Get.offAll(()=>const HomeScreen());
+    final box = GetStorage();
+    print(box.read("token"));
+    box.read("token")==null?Get.offAll(()=>const SplashScreen() ) : Get.offAll(()=>const HomeScreen());
   }
 
   Future<void>loginWithEmailAndPassword(String email, String password) async{
